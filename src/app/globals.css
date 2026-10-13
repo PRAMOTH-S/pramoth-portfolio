@@ -1,0 +1,527 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-bg font-sans text-ink antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    @apply bg-accent/30 text-ink;
+  }
+  :focus-visible {
+    @apply rounded-sm outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+  }
+}
+
+@layer components {
+  .label {
+    @apply font-mono text-[11px] uppercase tracking-label text-dim;
+  }
+  .panel {
+    @apply rounded-xl border border-line bg-surface;
+  }
+  .chip {
+    @apply inline-flex items-center rounded-md border border-line bg-surface2 px-2 py-1 font-mono text-[11px] text-muted;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-colors duration-200;
+  }
+  .btn-primary {
+    @apply btn relative overflow-hidden bg-accent text-bg shadow-[0_0_24px_rgb(52_210_123/0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-neon hover:shadow-[0_0_40px_rgb(52_210_123/0.55)];
+  }
+  .btn-ghost {
+    @apply btn border border-line-strong bg-bg/40 text-ink backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-accent hover:shadow-[0_0_24px_rgb(52_210_123/0.18)];
+  }
+  /* GSAP hover sheen on buttons (HoverFX tweens --sheen across) */
+  .btn-ghost {
+    @apply relative overflow-hidden;
+  }
+  .btn-primary::after,
+  .btn-ghost::after {
+    content: "";
+    position: absolute;
+    top: -40%;
+    bottom: -40%;
+    left: 0;
+    width: 34%;
+    pointer-events: none;
+    transform: translateX(var(--sheen, -180%)) skewX(-20deg);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.22), transparent);
+  }
+  .link-underline {
+    @apply underline decoration-line-strong underline-offset-4 transition-colors hover:text-accent hover:decoration-accent;
+  }
+}
+
+@layer utilities {
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(52 210 123 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(52 210 123 / 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .bg-dots {
+    background-image: radial-gradient(rgb(147 160 151 / 0.18) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  .mask-fade {
+    -webkit-mask-image: radial-gradient(ellipse at center, black 35%, transparent 75%);
+    mask-image: radial-gradient(ellipse at center, black 35%, transparent 75%);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  /* Animated shimmering gradient text (used on the hero name) */
+  .text-gradient {
+    background-image: linear-gradient(110deg, #e7ece8 0%, #e7ece8 38%, #86ffb8 48%, #34d27b 52%, #e7ece8 62%, #e7ece8 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Travelling light along a card's border (conic gradient, masked to a 1px ring) */
+  .beam {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: conic-gradient(
+      from var(--beam-angle, 0deg),
+      transparent 0deg 250deg,
+      rgb(52 210 123 / 0.9) 300deg,
+      #86ffb8 330deg,
+      transparent 360deg
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    animation: beam-rotate 7s linear infinite;
+  }
+  /* Holographic foil sweep for the verification card */
+  .foil {
+    background-image: linear-gradient(
+      115deg,
+      transparent 25%,
+      rgb(52 210 123 / 0.14) 40%,
+      rgb(231 236 232 / 0.1) 50%,
+      rgb(134 255 184 / 0.14) 60%,
+      transparent 75%
+    );
+    background-size: 250% auto;
+    animation: shimmer 5s linear infinite;
+  }
+  .glow-accent {
+    box-shadow: 0 0 32px rgb(52 210 123 / 0.22);
+  }
+  /* Below-fold sections: browser skips rendering work until they near the viewport */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 560px;
+  }
+  .noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes beam-rotate {
+  to {
+    --beam-angle: 360deg;
+  }
+}
+
+/* Custom two-layer cursor active (desktop fine-pointer only; class set by CustomCursor) */
+.has-cursor,
+.has-cursor * {
+  cursor: none !important;
+}
+
+/* Thin accent scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #76847c transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #3a4a41;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #34d27b;
+}
+
+/* Respect reduced-motion everywhere */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ── Print: clean light document, no chrome or effects ───────────────── */
+@page {
+  size: A4;
+  margin: 10mm 12mm;
+}
+@media print {
+  html {
+    color-scheme: light;
+    font-size: 10.5pt;
+  }
+  body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+  body > header,
+  body > footer,
+  .no-print,
+  canvas,
+  [data-print-hide] {
+    display: none !important;
+  }
+  main {
+    padding-top: 0 !important;
+  }
+  .resume,
+  .resume * {
+    color: #111 !important;
+    background: transparent !important;
+    border-color: #d4d4d4 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .resume .print-accent,
+  .resume a {
+    color: #0b6b36 !important;
+  }
+  .resume a[href^="http"]::after {
+    content: "";
+  }
+  .resume section {
+    break-inside: avoid;
+  }
+  /* ATS parsers read a plain single-column text flow: standard fonts, no panel chrome */
+  .resume {
+    max-width: none !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    font-family: Arial, Helvetica, "Liberation Sans", sans-serif !important;
+    font-size: 9.2pt !important;
+    line-height: 1.2 !important;
+  }
+  .resume h1 {
+    font-size: 19pt !important;
+    line-height: 1.1 !important;
+  }
+  .resume h2 {
+    font-size: 9.2pt !important;
+    margin-top: 5pt !important;
+    margin-bottom: 2pt !important;
+    padding-bottom: 1pt !important;
+    letter-spacing: 0.06em !important;
+    border-bottom: 1px solid #999 !important;
+  }
+  .resume h3 {
+    font-size: 9.5pt !important;
+  }
+  .resume section {
+    margin-top: 0 !important;
+  }
+  .resume ul {
+    margin: 0 !important;
+  }
+  .resume li {
+    margin: 0 !important;
+  }
+  .resume .space-y-2 > * + * {
+    margin-top: 2pt !important;
+  }
+  .resume a {
+    text-decoration: none !important;
+  }
+  .container {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+}
+
+/* ── Cinematic boot intro (src/components/BootIntro.tsx) ─────────────────
+   State lives on #boot-veil[data-boot]: absent (static page, overlay hidden),
+   "run" (first visit this session), "skip" (user skipped). Everything below
+   is CSS-timed, so it completes even if JS stops; hero children only use
+   fill-mode "backwards", so nothing can stay hidden once an animation ends
+   or the attribute is removed. Pages without #home are unaffected. */
+.boot-veil {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+}
+.boot-veil[data-boot] {
+  display: block;
+}
+.boot-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: auto;
+  cursor: pointer;
+  background: radial-gradient(ellipse at center, #0c100e 0%, #070908 70%);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  animation: boot-wipe 0.3s cubic-bezier(0.7, 0, 0.3, 1) 0.95s forwards;
+}
+.boot-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.7;
+  background-image:
+    linear-gradient(to right, rgb(52 210 123 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(52 210 123 / 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+/* LiDAR sweep: a bright line with a fading trail, travelling top → bottom */
+.boot-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -140px;
+  height: 140px;
+  background: linear-gradient(to bottom, transparent, rgb(52 210 123 / 0.14));
+  border-bottom: 2px solid #86ffb8;
+  box-shadow: 0 6px 24px rgb(52 210 123 / 0.55);
+  will-change: transform;
+  animation: boot-sweep 0.95s cubic-bezier(0.45, 0, 0.25, 1) forwards;
+}
+.boot-panel {
+  position: relative;
+  width: min(92vw, 420px);
+  padding: 20px 22px;
+  border: 1px solid #28352e;
+  border-radius: 10px;
+  background: rgb(12 16 14 / 0.88);
+  box-shadow: 0 0 60px rgb(52 210 123 / 0.08);
+  animation: boot-pop 0.25s ease-out both;
+}
+.boot-panel::before,
+.boot-panel::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #34d27b;
+  border-style: solid;
+}
+.boot-panel::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+  border-top-left-radius: 10px;
+}
+.boot-panel::after {
+  right: -1px;
+  bottom: -1px;
+  border-width: 0 2px 2px 0;
+  border-bottom-right-radius: 10px;
+}
+.boot-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #76847c;
+}
+.boot-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: #34d27b;
+  box-shadow: 0 0 10px #34d27b;
+  animation: boot-blink 0.4s steps(2) infinite;
+}
+.boot-line {
+  display: flex;
+  white-space: nowrap;
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: #e7ece8;
+}
+.boot-type {
+  clip-path: inset(0 100% 0 0);
+  animation: boot-type 0.18s steps(var(--n, 12)) calc(0.06s + var(--i, 0) * 0.13s) forwards;
+}
+.boot-dots {
+  flex: 1;
+  overflow: hidden;
+  color: #76847c;
+  opacity: 0;
+  animation: boot-fade 0.01s linear calc(0.24s + var(--i, 0) * 0.13s) forwards;
+}
+.boot-ok {
+  color: #34d27b;
+  font-weight: 600;
+  opacity: 0;
+  animation: boot-fade 0.01s linear calc(0.26s + var(--i, 0) * 0.13s) forwards;
+}
+.boot-bar {
+  position: relative;
+  height: 3px;
+  margin: 14px 0 12px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: #1b2420;
+}
+.boot-bar > span {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, #22c55e, #86ffb8);
+  box-shadow: 0 0 12px #34d27b;
+  animation: boot-progress 0.72s cubic-bezier(0.3, 0.6, 0.4, 1) 0.06s forwards;
+}
+.boot-online {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #86ffb8;
+  text-shadow: 0 0 18px rgb(52 210 123 / 0.6);
+  opacity: 0;
+  transform: translateY(6px);
+  animation: boot-online 0.2s ease-out 0.72s forwards;
+}
+.boot-sep {
+  color: #34d27b;
+}
+.boot-skip {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  pointer-events: auto;
+  padding: 6px 12px;
+  border: 1px solid #28352e;
+  border-radius: 6px;
+  background: #0c100e;
+  color: #e7ece8;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  animation: boot-wipe-fade 0.2s linear 1.05s forwards;
+}
+.boot-skip:hover {
+  border-color: #34d27b;
+  color: #86ffb8;
+}
+/* Skipped: overlay vanishes fast, inputs fall through immediately */
+.boot-veil[data-boot="skip"] .boot-screen {
+  pointer-events: none;
+  animation: boot-wipe-fade 0.18s linear forwards;
+}
+.boot-veil[data-boot="skip"] .boot-skip {
+  display: none;
+}
+/* Scroll is locked only while the overlay is actually running */
+html:has(#boot-veil[data-boot="run"]) {
+  overflow: hidden;
+}
+
+/* Hero "assembles" as the overlay wipes away (opacity/transform only) */
+html:has(#boot-veil[data-boot="run"]) #home .container > * {
+  animation: boot-rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) calc(1s + var(--boot-k, 0) * 0.09s) backwards;
+}
+html:has(#boot-veil[data-boot="skip"]) #home .container > * {
+  animation: boot-rise-fast 0.5s cubic-bezier(0.22, 1, 0.36, 1) calc(0.05s + var(--boot-k, 0) * 0.07s) backwards;
+}
+#home .container > :nth-child(2) { --boot-k: 1; }
+#home .container > :nth-child(3) { --boot-k: 2; }
+#home .container > :nth-child(4) { --boot-k: 3; }
+#home .container > :nth-child(5) { --boot-k: 4; }
+#home .container > :nth-child(n + 6) { --boot-k: 5; }
+
+@keyframes boot-sweep {
+  to { transform: translateY(calc(100vh + 140px)); }
+}
+@keyframes boot-wipe {
+  to { clip-path: inset(0 0 100% 0); opacity: 0.6; visibility: hidden; }
+}
+@keyframes boot-wipe-fade {
+  to { opacity: 0; visibility: hidden; }
+}
+@keyframes boot-pop {
+  from { opacity: 0; transform: scale(0.96); }
+}
+@keyframes boot-type {
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes boot-blink {
+  50% { opacity: 0.25; }
+}
+@keyframes boot-fade {
+  to { opacity: 1; }
+}
+@keyframes boot-progress {
+  to { transform: scaleX(1); }
+}
+@keyframes boot-online {
+  to { opacity: 1; transform: none; }
+}
+@keyframes boot-rise {
+  from { opacity: 0; transform: translate3d(0, 28px, 0) scale(0.97); }
+}
+@keyframes boot-rise-fast {
+  from { opacity: 0; transform: translate3d(0, 16px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .boot-veil { display: none !important; }
+}
+@media print {
+  .boot-veil { display: none !important; }
+}
+
+/* GSAP-animated blocks are server-rendered hidden so nothing flashes before
+   their timelines set the initial state (see HeroIntro / HeaderIntro). */
+@media (prefers-reduced-motion: reduce) {
+  .hero-pending { visibility: visible !important; }
+}

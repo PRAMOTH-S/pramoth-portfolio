@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+.env
+.env.local
+*.tsbuildinfo
+/.next-prod/
+
+# local helper files stay out of the repo
+.taste-skill

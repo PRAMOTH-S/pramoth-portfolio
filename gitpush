@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Push the whole portfolio to GitHub.
+# Usage: ./gitpush            -> commit message is the current date/time
+#        ./gitpush "message"  -> custom commit message
+set -euo pipefail
+cd "$(dirname "$0")"
+
+REPO_NAME="pramoth-portfolio"
+VISIBILITY="--public"   # change to --private if you don't want the source visible
+MSG="${1:-Update site $(date '+%Y-%m-%d %H:%M')}"
+
+# First run: turn the folder into a git repo.
+if [ ! -d .git ]; then
+  git init -b main
+fi
+
+git add -A
+if git diff --cached --quiet; then
+  echo "Nothing new to commit."
+else
+  git commit -m "$MSG"
+fi
+
+# First run: create the GitHub repo and link it as origin.
+if ! git remote get-url origin >/dev/null 2>&1; then
+  gh repo create "$REPO_NAME" "$VISIBILITY" --source=. --remote=origin
+fi
+
+git push -u origin main
+echo "Pushed to $(git remote get-url origin)"
